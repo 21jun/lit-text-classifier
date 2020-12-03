@@ -19,6 +19,10 @@ from torch.utils.data import DataLoader
 
 from transformers import BertTokenizer, BertModel
 
+# from project.dataset import SMSDataModule
+
+from dataset import SMSDataModule
+
 
 PRE_TRAINED_MODEL_NAME = 'bert-base-uncased'
 
@@ -38,10 +42,16 @@ class LitBertClassifier(pl.LightningModule):
     def forward(self, input_ids, attention_mask):
 
         # print(input_ids.size(), attention_mask.size())
-        _, pooled_output = self.bert(
+
+        # print(input_ids, attention_mask)
+
+        outputs = self.bert(
             input_ids=input_ids,
-            attention_mask=attention_mask
+            attention_mask=attention_mask,
+            return_dict=False
         )
+        pooled_output = outputs[1]
+
         output = self.drop(pooled_output)
         return self.out(output)
 
@@ -251,7 +261,8 @@ def cli_main():
         '--data_dir', default='../data/TWEET/train.csv', type=str)
     parser.add_argument('--max_len', default=100, type=int)
     parser.add_argument('--n_classes', default=2, type=int)
-    parser.add_argument('--gpus', default=1, type=int, help=False)
+    parser.add_argument('--max_epochs', default=1, type=int)
+    parser.add_argument('--gpus', default=0, type=int, help=False)
     parser.add_argument('--weights_summary', default='full', type=str)
     # parser.add_argument('--learning_rate', default=0.001, type=float)
     # parser.add_argument('--max_epochs', default=5, type=int, help=False)
@@ -263,7 +274,12 @@ def cli_main():
     # ------------
     # data
     # ------------
-    tweet = LitTweetDataModule(args.data_dir, args.batch_size, args.max_len)
+    tokenizer = BertTokenizer.from_pretrained(PRE_TRAINED_MODEL_NAME)
+
+    tweet = SMSDataModule("data/spam.csv", 8,
+                          max_len=100, tokenizer=tokenizer)
+
+    # tweet = LitTweetDataModule(args.data_dir, args.batch_size, args.max_len)
 
     # ------------
     # model
