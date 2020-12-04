@@ -19,7 +19,7 @@ def cli_main():
     parser.add_argument('--max_epochs', default=1, type=int)
     parser.add_argument('--gpus', default=0, type=int, help=False)
     parser.add_argument('--weights_summary', default='full', type=str)
-
+    parser.add_argument('--default_root_dir', default="save/checkpoints")
     # parser = pl.Trainer.add_argparse_args(parser)
     parser = LitBertClassifier.add_model_specific_args(parser)
     args = parser.parse_args()

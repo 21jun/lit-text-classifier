@@ -1,29 +1,12 @@
 from argparse import ArgumentParser
-import re
-
-import pandas as pd
-import numpy as np
-
-from sklearn.model_selection import train_test_split
-
-import torchtext
-from torchtext import data
-from torchtext.data import Field
 
 import torch
 import torch.nn as nn
 import pytorch_lightning as pl
 from pytorch_lightning.metrics.classification.accuracy import Accuracy
 
-from torch.utils.data import DataLoader
+from transformers import BertModel
 
-from transformers import BertTokenizer, BertModel
-
-# from project.dataset import SMSDataModule
-
-
-# from datsets.dataset import SMSDataModule
-from project.datasets.dataset import SMSDataModule
 
 PRE_TRAINED_MODEL_NAME = 'bert-base-uncased'
 
@@ -41,10 +24,6 @@ class LitBertClassifier(pl.LightningModule):
         self.out = nn.Linear(self.bert.config.hidden_size, n_classes)
 
     def forward(self, input_ids, attention_mask):
-
-        # print(input_ids.size(), attention_mask.size())
-
-        # print(input_ids, attention_mask)
 
         outputs = self.bert(
             input_ids=input_ids,
