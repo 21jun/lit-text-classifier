@@ -2,6 +2,7 @@ torch==1.6.0
 torchtext==0.6.0
 pandas
 numpy
+sklearn
 pytest==5.4.3
 transformers==4.0.0
 pytorch-lightning==1.0.5
