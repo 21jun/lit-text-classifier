@@ -6,6 +6,7 @@ from easydict import EasyDict
 
 def test_lit_text_classifier():
 
+    # No GPUs
     args = EasyDict(
         {
             "data_dir": "data/spam.csv",
@@ -19,7 +20,7 @@ def test_lit_text_classifier():
     )
 
     dm = SMSDataModule(data_dir=args.data_dir, batch_size=args.batch_size,
-                       max_len=args.max_len)
+                       max_len=args.max_len, sample_size=100)
 
     model = LitBertClassifier(args.n_classes)
 

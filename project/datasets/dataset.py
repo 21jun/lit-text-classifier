@@ -86,17 +86,19 @@ class DataFrameDataset(data.Dataset):
 
 class SMSDataModule(pl.LightningDataModule):
 
-    def __init__(self, data_dir, batch_size, max_len, encoding='latin-1'):
+    def __init__(self, data_dir, batch_size, max_len, sample_size=None, encoding='latin-1'):
         super().__init__()
         self.data_dir = data_dir
         self.encoding = encoding
         self.batch_size = batch_size
         self.tokenizer = BertTokenizer.from_pretrained(PRE_TRAINED_MODEL_NAME)
         self.max_len = max_len
+        self.sample_size= sample_size
 
     def prepare_data(self):
         pass
-
+    
+   
     @staticmethod
     def sample(df, max_len, tokenizer):
         TEXT = Field(sequential=True,
@@ -157,6 +159,10 @@ class SMSDataModule(pl.LightningDataModule):
 
         fields = [('text', TEXT), ('input_ids', INPUT_IDS),
                   ('attention_mask', ATTENTION_MASK), ('label', LABEL)]
+
+        # For sampling
+        if self.sample_size:
+            self.df = self.df[:self.sample_size]
 
         self.train_df, self.test_df = train_test_split(self.df, test_size=0.3)
         self.val_df, self.test_df = train_test_split(
