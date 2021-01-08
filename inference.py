@@ -27,7 +27,15 @@ def sample_inference(model, ds):
 
 def cli_main():
     pl.seed_everything(1234)
-    # spam, ham, spam, ham, spam
+    # ------------
+    # args
+    # ------------
+    parser = ArgumentParser()
+    parser.add_argument(
+        '--model', default='save/checkpoints/lightning_logs/version_0/checkpoints/epoch=0-step=487.ckpt', type=str)
+    args = parser.parse_args()
+
+    # spam(1), ham(0), spam, ham, spam
     text_list = [
         "Free entry in 2 a wkly comp to win FA Cup final tkts 21st May 2005. Text FA to 87121 to receive entry question(std txt rate)T&C's apply 08452810075over18's",
         "I'm gonna be home soon and i don't want to talk about this stuff anymore tonight, k? I've cried enough today.",
@@ -35,8 +43,8 @@ def cli_main():
         "Will ? b going to esplanade fr home?",
         "This is the 2nd time we have tried 2 contact u. U have won the 鶯750 Pound prize. 2 claim is easy, call 087187272008 NOW1! Only 10p per minute. BT-national-rate."
     ]
-    model = LitBertClassifier.load_from_checkpoint(
-        'save/checkpoints/lightning_logs/version_1/checkpoints/epoch=4.ckpt')
+
+    model = LitBertClassifier.load_from_checkpoint(args.model)
     ds = make_sample(text_list)
 
     sample_inference(model, ds)

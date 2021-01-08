@@ -93,12 +93,11 @@ class SMSDataModule(pl.LightningDataModule):
         self.batch_size = batch_size
         self.tokenizer = BertTokenizer.from_pretrained(PRE_TRAINED_MODEL_NAME)
         self.max_len = max_len
-        self.sample_size= sample_size
+        self.sample_size = sample_size
 
     def prepare_data(self):
         pass
-    
-   
+
     @staticmethod
     def sample(df, max_len, tokenizer):
         TEXT = Field(sequential=True,
@@ -194,15 +193,17 @@ def normalize_text(text):
 
 # for Test
 def main():
-    datamodule = SMSDataModule("data/spam.csv", 8,
+    datamodule = SMSDataModule("../../data/spam.csv", 8,
                                max_len=100)
     datamodule.setup()
 
     train_loader = datamodule.train_dataloader()
 
     print(train_loader)
-    for i in train_loader:
-        print(i)
+    for sample in train_loader:
+        print(sample['attention_mask'].size())
+        print(sample['input_ids'].size())
+        print(sample['targets'].size())
         break
 
 
