@@ -36,11 +36,6 @@ jobs:
       run: |
         brew install libomp  # https://github.com/pytorch/pytorch/issues/20030
 
-    - name: Setup windows
-      if: runner.os == "windows"
-      run: |
-        python -m pip install --upgrade pip
-
     # Note: This uses an internal pip API and may not always work
     # https://github.com/actions/cache/blob/master/examples.md#multiple-oss-in-a-workflow
     - name: Get pip cache
@@ -58,6 +53,7 @@ jobs:
 
     - name: Install dependencies
       run: |
+        python -m pip install --upgrade pip
         pip install --requirement requirements.txt --upgrade --quiet --find-links https://download.pytorch.org/whl/cpu/torch_stable.html --use-feature=2020-resolver
         pip install --requirement tests/requirements.txt --quiet --use-feature=2020-resolver
         python --version
